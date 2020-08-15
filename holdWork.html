@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+    <a href="CanvasJS-Chart-With-Logarithmic-Axis.html"></a>
+
+    <link href="project.css" rel="stylesheet">
+
+
+</head>
+
+<body class="des desImage siteDescription main_articles side_article header">
+    <img width="400" height="200" class="img"
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTklzBlRTiqxR_8qdqEuX1PYMlHCzPz9fxJSR1qEJ77aMoWNxCW"></img>
+
+    <div class="jumbotron jumbotron-fluid bg-dark text-light">
+        <h1 class="m-4 p-3">CryPtonite</h1>
+
+        <ul class="nav nav-tabs card-header-tabs">
+
+            <li class="nav-item">
+                <button my-attr-id="button1" class="btn als1 b text-light btn-primary m-2 ml-3" type="button">Home
+                </button>
+            </li>
+            <button my-attr-id="button2" class="btn als1 b text-light btn-primary m-2 ml-3" onclick="GetinChecks()"
+                type="button">Live
+                Changes
+            </button>
+
+            <li class="nav-item">
+                <button my-attr-id="button3" class="btn als1 b text-light btn-primary m-2 ml-3" type="button">About
+                </button>
+            </li>
+
+        </ul>
+    </div>
+    <div class="H1" id="button1">
+
+        <div class="container">
+            <div class="modal" id="myModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+
+                            </h5>
+                        </div>
+                        <div class="modal-Switch">
+
+                        </div>
+                        <div class="modal-footer d-flex justify-content-center">
+                            <button type="button" id="AlertClose" class="btn btn-secondary"
+                                data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row">
+                <div class="col-4">
+                    <input class="form-control bg-dark text-light" type="text" id="nameIn" placeholder="Search By Name">
+                </div>
+
+                <div class="col-2">
+                    <button type="button" class="btn btn-primary" onclick="SearchName()">Search</button>
+                </div>
+            </div>
+
+
+            <div class="row" id="Coinses">
+
+            </div>
+            <div id="NameCoins">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="H" id="button2">
+        <div id="chartContainerId" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
+
+    </div>
+
+
+    <div class="H" id="button3">
+        <div class="container">
+            <div class="p-4 m-2">
+                <h1>Hello User Let Me tell you about myslef!</h1>
+                <h5>My name is Idan and Im from Zikhron Yaakov and I`m 22 Years Old.</h5>
+                <h5>I`m doing a Project about Ajax-jQuery Api CryPtonite, In the Project I take API(website kit),
+                    And im
+                    doin
+                    Bitcoin and Internet Marketing!</h5>
+                <h5>I Started the Courses on 17.7.19 and I`m finishing the Courses on 17.5.20 I`m excited to tell
+                    you
+                    about
+                    all
+                    the way I came throgh On the last few month.</h5>
+
+                <img class="imges" style=" width:300px; height:250px; border-radius: 50%; float: right;"
+                    src="https://icon-library.net/images/no-user-image-icon/no-user-image-icon-14.jpg">
+                </img>
+
+
+
+            </div>
+        </div>
+    </div>
+    <script>
+
+
+        $(".H1").show(1);
+        $(".H").hide(1);
+
+        $('.b').on('click', function () {
+            var attrs = $(this).attr('my-attr-id');
+            $(".H1").hide(1);
+            $(".H").hide(100);
+            $('#' + attrs).show(200);
+
+
+        })
+
+        ProjectURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=99&page=1";
+
+        var FindName = nameIn.value;
+
+        FindByNameURL = `https://api.coingecko.com/api/v3/coins`;
+
+        var coins = [];
+
+
+        var LocalChecked = [];
+
+        var NewChecks = [];
+
+        var MakeCoins = [];
+
+        if (localStorage.getItem("coins") === null) {
+            localStorage.setItem("coins", JSON.stringify(coins));
+
+        }
+
+        let CoinsCheck = JSON.parse(localStorage.getItem("coins"));
+
+
+
+        window.onload = SearchCoins = () => {
+            $.ajax(
+                {
+                    type: 'GET',
+                    datatype: 'json',
+                    url: ProjectURL,
+
+                    success: function (data) {
+                        Coins = data;
+                        console.log("server response:", data);
+                        printHTML();
+
+
+                    },
+                    error: function (error) {
+                        console.log("error : ", error);
+                    }
+
+                }
+            );
+        }
+
+        function SearchName() {
+
+            $.ajax(
+                {
+                    type: 'GET',
+                    datatype: 'json',
+                    url: FindByNameURL + '/' + nameIn.value,
+
+                    success: function (data) {
+
+                        console.log("server Name Response:", data);
+                        CoinsData = data;
+                        PrintName();
+
+
+                    },
+                    error: function (error) {
+                        console.log("error : ", error);
+                    }
+
+                }
+            );
+        }
+
+
+        function PrintName() {
+            str = "";
+            for (i = 0; i < 1; i++) {
+                str += '<div class="col-6 bg-dark text-light">';
+                str += '<div class="card-body m-2" style="border:solid 1px black; overflow:hidden;">';
+                str += `<div class="custom-control custom-switch" style="float:right;">`;
+                str += `</div>`;
+                str += `<h2 class="card-Title"> ${CoinsData['name']}</h2>`;
+                str += `<p style="position:innherit;">${CoinsData['symbol']}</p>`;
+                str += `<button my-attr-id="${CoinsData['id']}" class="btn btn-primary als1 Show" type="button"> Show Details</button>`;
+                str += `<div class="HSRS" id="${CoinsData['id']}"> `;
+                str += `<img class="m-2" style = "width:100px; height:100px; border-radius:50%;" src="${CoinsData['image']['small']}">`;
+                str += `<div>Coingecko Score : ${CoinsData['coingecko_score']}</div></hr>`;
+                str += `<div> Developer Score : ${CoinsData['developer_score']}</div>`;
+                str += '</div></div></div>';
+            }
+
+            Coinses.innerHTML = str;
+
+            $(".HSRS").hide(1);
+
+            $('.Show').on('click', function () {
+                var attrss = $(this).attr('my-attr-id');
+                $(".HSRS").hide(100);
+                $('#' + attrss).show(200);
+                NewCheck();
+                console.log(attrss);
+            })
+        }
+
+
+        function printHTML() {
+
+            str = "";
+            for (i = 0; i < Coins.length; i++) {
+                str += '<div class="col-4 xl sm">'
+                str += '<div class="card-body m-2" style="border:solid 1px black; overflow:hidden;">';
+                str += `<h2 class="card-Title"> ${Coins[i]['name']}</h2>`;
+
+                if (CoinsCheck.some(item => item.name === Coins[i]['name'])) {
+                    console.log(`[${Coins[i]['name']}]`);
+                    str += ` <div class="col-xl-2" style="float:right;">`
+                    str += `<div class="custom-control custom-switch" >`
+                    str += `<input checked="checked" type="checkbox" class="custom-control-input"  id="Switched${Coins[i]['id']}" onclick="NewCheck(${i}, this)">`
+                    str += `<label class="custom-control-label" for="Switched${Coins[i]['id']}"></label>`
+                    str += `</div></div>`;
+                } else {
+                    str += `<div class="col-xl-2" style="float:right">`
+                    str += `<div class="custom-control custom-switch"">`
+                    str += `<input type="checkbox" class="custom-control-input" id="Switched${Coins[i]['id']}" onclick="NewCheck(${i}, this)">`
+                    str += `<label class="custom-control-label" for="Switched${Coins[i]['id']}"></label>`
+                    str += `</div></div>`;
+                }
+
+                str += `<p class="card-text">${Coins[i].symbol}</p>`
+                str += `<button my-attr-id="${Coins[i]['id']}" class="btn btn-primary als1 Show" type="button">Show Details</button>`
+                str += `<div class="HSRS" id="${Coins[i]['id']}">`;
+                str += `<img class="m-2" style="width:100px; height:100px; border-radius:50%;" src="${Coins[i]['image']}" > `;
+                str += `<div> Price: ${Coins[i]['current_price']}</div></hr> `;
+                str += `<div> Price Change: ${Coins[i]['price_change_24h']}</div> `;
+                str += `</div></div></div>`;
+            }
+
+            Coinses.innerHTML = str;
+
+            $(".HSRS").hide(1);
+
+            $('.Show').on('click', function () {
+                var attrss = $(this).attr('my-attr-id');
+                $(".HSRS").hide(100);
+                $('#' + attrss).show(200);
+                console.log(attrss);
+            })
+
+
+        }
+        NewCheck = (i, element) => {
+            let liveRepNew = localStorage.getItem("coins");
+            let CheckCoins = JSON.parse(liveRepNew);
+            console.log("Coins:", CheckCoins)
+            let CoinNumber = i;
+            console.log("here", CoinNumber);
+            console.log("Coins:", CheckCoins, "result[i]:", Coins[CoinNumber])
+            if ($(`#Switched${Coins[i]['id']} `).is(':checked')) {
+                Coins[CoinNumber].toggle = true;
+                if (CheckCoins.length < 5) {
+                    CheckCoins.push(Coins[CoinNumber]);
+                    console.log("Coins:", CheckCoins)
+                    localStorage.coins = JSON.stringify(CheckCoins);
+
+                }
+                else {
+                    element.checked = !element.checked;
+                    ReplaceCoin(Coins[CoinNumber], CoinNumber);
+                }
+            }
+            else {
+                let AfterDelArray;
+                console.log("deleted:", Coins[CoinNumber])
+                Coins[CoinNumber].toggle = false;
+                if (Coins[CoinNumber].toggle == false) {
+                    for (let i = 0; i < 5; i++) {
+                        AfterDelArray = CheckCoins.filter(item => item.id !== Coins[CoinNumber]['id']);
+                    }
+                    console.log(AfterDelArray)
+                }
+                console.log("Coins:", CheckCoins)
+                localStorage.coins = JSON.stringify(AfterDelArray);
+                console.log(JSON.parse(localStorage.coins))
+            }
+        }
+        ReplaceCoin = (InsertCoin, CoinNumber) => {
+            console.log("Replaced");
+            let CoinsDelete = localStorage.getItem("coins");
+            let DeleteCoinArr = JSON.parse(CoinsDelete);
+            console.log("DeleteArr:", DeleteCoinArr);
+
+            var modal = document.getElementById("myModal");
+            modal.style.display = "block";
+            $(".modal-title").append(
+                `<p> You cant pick more than 5.</p>
+                    <p> Please choose a coin to replace.</p>`
+            );
+
+            for (let i = 0; i < DeleteCoinArr.length; i++) {
+                $(".modal-Switch").append(
+                    `<div class="card-body">
+                    <div>${DeleteCoinArr[i]['name']}<button id="${DeleteCoinArr[i]['id']}" type="button" class="btn btn-primary" style="font-size:14px; float:right;" onclick="DeleteCoin(2)">Switch</button></div>
+            </div>`)
+
+                $(`#${DeleteCoinArr[i]['id']}`).click(() => {
+                    console.log("DeleteStr[i].id:", DeleteCoinArr[i]['id'])
+                    let replaceCoinId = DeleteCoinArr[i].id;
+                    console.log("KickerStr:", DeleteCoinArr)
+                    let newLiveArr = DeleteCoinArr.filter(item => item.id !== DeleteCoinArr[i]['id']);
+                    console.log(newLiveArr)
+                    newLiveArr.push(InsertCoin);
+                    console.log("newLiveArr:", newLiveArr);
+                    let newLiveARRJS = JSON.stringify(newLiveArr);
+                    localStorage.setItem("coins", newLiveARRJS);
+                    modal.style.display = "none"
+                    $(".modal-title").empty();
+                    $(".modal-Switch").empty();
+                    for (let i = 0; i < Coins.length; i++) {
+                        if (Coins[i]['id'] == replaceCoinId) {
+                            $(`#Switched${Coins[i]['id']} `).prop("checked", false)
+                        }
+                        $(`#Switched${InsertCoin['id']}`).prop("checked", true);
+
+                    }
+                })
+            }
+
+            $("#AlertClose").click(() => {
+                console.log(InsertCoin)
+                console.log(CoinNumber)
+                modal.style.display = "none";
+                $(".modal-title").empty();
+                $(".modal-Switch").empty();
+            })
+        }
+
+        DeleteCoin = (num) => {
+            console.log("newCoin", num);
+        }
+
+        function GetinChecks() {
+            $(`#chartContainerId`).empty();
+
+            $(`#chartContainerId`).append(`<div id="chartContainer" style="margin-top:50px; width:900px; height:400px;"></div>`);
+
+            let CoinsData = localStorage.getItem("coins")
+            let LiveReportData = JSON.parse(CoinsData);
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                zoomEnabled: true,
+                theme: "dark2",
+                title: {
+                    text: "Virtual Currency"
+                },
+                axisX: {
+                    title: "Low24H-Now-High24H",
+                    valueFormatString: "####",
+                    interval: 2
+                },
+                axisY: {
+                    logarithmic: false, //change it to false
+                    title: "Profit in USD (Log)",
+                    prefix: "$",
+                    titleFontColor: "#6D78AD",
+                    lineColor: "#6D78AD",
+                    gridThickness: 0,
+                    lineThickness: 1,
+                    includeZero: false,
+                    labelFormatter: addSymbols
+                },
+                axisY2: {
+                    title: "Profit in USD",
+                    prefix: "$",
+                    titleFontColor: "#51CDA0",
+                    logarithmic: true, //change it to true
+                    lineColor: "#51CDA0",
+                    gridThickness: 0,
+                    lineThickness: 1,
+                    labelFormatter: addSymbols
+                },
+                legend: {
+                    verticalAlign: "top",
+                    fontSize: 16,
+                    dockInsidePlotArea: true
+                },
+                data: [{
+                    type: "line",
+                    xValueFormatString: "####",
+                    yValueFormatString: "$#,##0.##",
+                    showInLegend: true,
+                    name: LiveReportData[0].name,
+                    dataPoints: [
+                        { x: 2018, y: LiveReportData[0].low_24h },
+                        { x: 2019, y: LiveReportData[0].current_price },
+                        { x: 2020, y: LiveReportData[0].high_24h },
+
+                    ]
+
+
+                },
+                {
+                    type: "line",
+                    xValueFormatString: "####",
+                    yValueFormatString: "$#,##0.##",
+                    axisYType: "secondary",
+                    showInLegend: true,
+                    name: LiveReportData[1].name,
+                    dataPoints: [
+                        { x: 2018, y: LiveReportData[1].low_24h },
+                        { x: 2019, y: LiveReportData[1].current_price },
+                        { x: 2020, y: LiveReportData[1].high_24h },
+
+                    ]
+
+                },
+                {
+                    type: "line",
+                    xValueFormatString: "####",
+                    yValueFormatString: "$#,##0.##",
+                    axisYType: "secondary",
+                    showInLegend: true,
+                    name: LiveReportData[2].name,
+                    dataPoints: [
+                        { x: 2018, y: LiveReportData[2].low_24h },
+                        { x: 2019, y: LiveReportData[2].current_price },
+                        { x: 2020, y: LiveReportData[2].high_24h },
+
+                    ]
+                },
+                {
+                    type: "line",
+                    xValueFormatString: "####",
+                    yValueFormatString: "$#,##0.##",
+                    axisYType: "secondary",
+                    showInLegend: true,
+                    name: LiveReportData[3].name,
+                    dataPoints: [
+                        { x: 2018, y: LiveReportData[3].low_24h },
+                        { x: 2019, y: LiveReportData[3].current_price },
+                        { x: 2020, y: LiveReportData[3].high_24h },
+                    ]
+                },
+                {
+                    type: "line",
+                    xValueFormatString: "####",
+                    yValueFormatString: "$#,##0.##",
+                    axisYType: "secondary",
+                    showInLegend: true,
+                    name: LiveReportData[4].name,
+                    dataPoints: [
+                        { x: 2018, y: LiveReportData[4].low_24h },
+                        { x: 2019, y: LiveReportData[4].current_price },
+                        { x: 2020, y: LiveReportData[4].high_24h },
+
+                    ]
+                },
+                ]
+            });
+
+            chart.render();
+
+            function addSymbols(e) {
+                var suffixes = ["", "K", "M", "B"];
+
+                var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
+                if (order > suffixes.length - 1)
+                    order = suffixes.length - 1;
+
+                var suffix = suffixes[order];
+                console.log(suffix);
+
+                return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
+            }
+
+        }
+
+
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>
